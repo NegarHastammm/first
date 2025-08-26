@@ -1,16 +1,28 @@
-
 'use client';
+import React from 'react';
 
-type Props = { images: string[] };
+type Props = {
+  images: string[];
+};
 
 export default function GalleryGrid({ images }: Props) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-      {images.map((src, i) => (
-        <div key={i} className="overflow-hidden rounded-xl shadow-md hover:scale-105 transition-transform duration-300">
-          <img src={src} alt={`Gallery ${i}`} className="w-full h-40 object-cover" />
-        </div>
-      ))}
+    <div className="w-full">
+      <h2 className="text-lg font-bold mb-3">Main Gallery</h2>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+        {images.map((img, idx) => (
+          <div
+            key={idx}
+            className="relative w-full h-32 md:h-40 rounded-lg overflow-hidden shadow"
+          >
+            <img
+              src={img}
+              alt={`gallery-${idx}`}
+              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

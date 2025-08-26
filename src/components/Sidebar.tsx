@@ -1,36 +1,49 @@
 'use client';
-import { useState } from 'react';
-import { Bars3Icon } from '@heroicons/react/24/solid';
+import React, { useState } from 'react';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 
-const sidebarItems = Array.from({ length: 20 }, (_, i) => ({
-  id: i + 1,
-  label: `Item ${i + 1}`,
-  route: `/dashboard?tab=${i + 1}`
-}));
+type Props = {
+  items: string[];
+  active: number;
+  onSelect: (idx: number) => void;
+};
 
-export default function Sidebar() {
-  const [open, setOpen] = useState(true);
+export default function Sidebar({ items, active, onSelect }: Props) {
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <aside className={`bg-white shadow-lg transition-all duration-300 ${open ? 'w-64' : 'w-16'}`}>
-      <div className="flex items-center justify-between p-4 border-b">
-        {open && <span className="font-bold text-lg">Menu</span>}
-        <button onClick={() => setOpen(!open)}>
-          <Bars3Icon className="w-6 h-6 text-gray-700" />
+    <aside
+      className={`bg-base-200 text-base-content h-screen flex flex-col transition-all duration-300 ${
+        collapsed ? 'w-16' : 'w-64'
+      }`}
+    >
+      {/* Collapse button */}
+      <div className="flex justify-end p-2 flex-shrink-0">
+        <button
+          onClick={() => setCollapsed(!collapsed)}
+          className="btn btn-ghost btn-square"
+          aria-label="Toggle sidebar"
+        >
+          {collapsed ? <Bars3Icon className="w-6 h-6" /> : <XMarkIcon className="w-6 h-6" />}
         </button>
       </div>
-      <ul className="mt-4">
-        {sidebarItems.map((it) => (
-          <li key={it.id}>
-            <a
-              href={it.route}
-              className="w-full block px-4 py-2 rounded hover:bg-blue-100 text-left"
-            >
-              {open ? it.label : it.label[0]}
-            </a>
-          </li>
+
+      {/* Menu items */}
+      <div className="flex-1 flex flex-col justify-start">
+        {items.map((item, idx) => (
+          <button
+            key={idx}
+            onClick={() => onSelect(idx)}
+            className={`w-full text-left px-3 py-2 rounded-md transition-colors duration-200 flex items-center gap-2
+              ${active === idx ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'}
+            `}
+          >
+            {/* Small icon placeholder */}
+            <div className="w-4 h-4 bg-gray-400 rounded-full flex-shrink-0" />
+            {!collapsed && <span>{item}</span>}
+          </button>
         ))}
-      </ul>
+      </div>
     </aside>
   );
 }
