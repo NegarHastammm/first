@@ -3,6 +3,8 @@
 @tailwind utilities;
 @plugin "daisyui";
 
+
+
 /* Theme Colors - Modern Blue \*/
 root {
 primary: #1E3A8A;

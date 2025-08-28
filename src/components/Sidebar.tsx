@@ -1,48 +1,52 @@
 'use client';
-import React, { useState } from 'react';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 
-type Props = {
+import { useState } from 'react';
+import { Menu } from 'lucide-react';
+
+type SidebarProps = {
   items: string[];
   active: number;
-  onSelect: (idx: number) => void;
+  onSelect: (i: number) => void;
 };
 
-export default function Sidebar({ items, active, onSelect }: Props) {
-  const [collapsed, setCollapsed] = useState(false);
+export default function Sidebar({ items, active, onSelect }: SidebarProps) {
+  const [open, setOpen] = useState(true);
 
   return (
     <aside
-      className={`bg-base-200 text-base-content h-screen flex flex-col transition-all duration-300 ${
-        collapsed ? 'w-16' : 'w-64'
-      }`}
+      className={`bg-gray-100 min-h-screen transition-all duration-300 ${
+        open ? 'w-64' : 'w-16'
+      } flex flex-col`}
     >
-      {/* Collapse button */}
-      <div className="flex justify-end p-2 flex-shrink-0">
+      {/* Header with burger button */}
+      <div className="flex items-center justify-between p-4 border-b border-gray-200">
         <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="btn btn-ghost btn-square"
+          onClick={() => setOpen(!open)}
+          className="btn btn-ghost btn-sm"
           aria-label="Toggle sidebar"
         >
-          {collapsed ? <Bars3Icon className="w-6 h-6" /> : <XMarkIcon className="w-6 h-6" />}
+          <Menu className="w-5 h-5" />
         </button>
+        {open && <span className="font-bold text-black">Menu</span>}
       </div>
 
-      {/* Menu items */}
-      <div className="flex-1 flex flex-col justify-start">
-        {items.map((item, idx) => (
-          <button
-            key={idx}
-            onClick={() => onSelect(idx)}
-            className={`w-full text-left px-3 py-2 rounded-md transition-colors duration-200 flex items-center gap-2
-              ${active === idx ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'}
-            `}
-          >
-            {/* Small icon placeholder */}
-            <div className="w-4 h-4 bg-gray-400 rounded-full flex-shrink-0" />
-            {!collapsed && <span>{item}</span>}
-          </button>
-        ))}
+      {/* Items */}
+      <div className="flex-1 overflow-y-auto p-2">
+        <div className="flex flex-col gap-2">
+          {items.map((item, i) => (
+            <button
+              key={i}
+              onClick={() => onSelect(i)}
+              className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${
+                i === active
+                  ? 'bg-blue-600 text-white'
+                  : 'hover:bg-gray-200 text-gray-800'
+              }`}
+            >
+              {open ? item : i + 1}
+            </button>
+          ))}
+        </div>
       </div>
     </aside>
   );

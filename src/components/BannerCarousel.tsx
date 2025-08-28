@@ -1,60 +1,66 @@
 'use client';
-import React from 'react';
+import { useState } from 'react';
 
 type BannerCard = {
+  id: number;
   image: string;
-  title?: string;
 };
 
-type Props = {
+type BannerCarouselProps = {
   cards: BannerCard[];
 };
 
-export default function BannerCarousel({ cards }: Props) {
+export default function BannerCarousel({ cards }: BannerCarouselProps) {
+  const [active, setActive] = useState(0);
+
+  function prevSlide() {
+    setActive((p) => (p - 1 + cards.length) % cards.length);
+  }
+  function nextSlide() {
+    setActive((p) => (p + 1) % cards.length);
+  }
+
   return (
-    <div className="w-full">
-       <h2 className="text-lg font-bold mb-3">Banner</h2>
-      {/* Carousel wrapper */}
-      <div className="carousel w-full rounded-xl overflow-hidden shadow-md">
-        {cards.map((card, idx) => (
-          <div
-            key={idx}
-            id={`slide-${idx}`}
-            className="carousel-item relative w-full"
-          >
-            <img
-              src={card.image}
-              alt={card.title || `banner-${idx}`}
-              className="w-full h-52 md:h-72 object-cover"
-            />
-            <div className="absolute flex justify-between transform -translate-y-1/2 left-4 right-4 top-1/2">
-              <a
-                href={`#slide-${(idx - 1 + cards.length) % cards.length}`}
-                className="btn btn-circle btn-sm"
-              >
-                ❮
-              </a>
-              <a
-                href={`#slide-${(idx + 1) % cards.length}`}
-                className="btn btn-circle btn-sm"
-              >
-                ❯
-              </a>
-            </div>
-          </div>
+    <div className="w-full relative rounded-xl overflow-hidden shadow-lg">
+        <h2 className="text-lg font-bold mb-3">Banner</h2>
+      {/* Images */}
+      <div className="relative w-full h-56 md:h-80">
+        {cards.map((c, i) => (
+          <img
+            key={c.id}
+            src={c.image}
+            alt={`banner-${c.id}`}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+              i === active ? 'opacity-100' : 'opacity-0'
+            }`}
+          />
         ))}
       </div>
 
+      {/* Controls */}
+      <button
+        onClick={prevSlide}
+        className="absolute left-3 top-1/2 -translate-y-1/2 btn btn-circle btn-sm bg-white/70 hover:bg-white"
+      >
+        ❮
+      </button>
+      <button
+        onClick={nextSlide}
+        className="absolute right-3 top-1/2 -translate-y-1/2 btn btn-circle btn-sm bg-white/70 hover:bg-white"
+      >
+        ❯
+      </button>
+
       {/* Indicators */}
-      <div className="flex justify-center gap-2 py-3">
-        {cards.map((_, idx) => (
-          <a
-            key={idx}
-            href={`#slide-${idx}`}
-            className="btn btn-xs btn-circle"
-          >
-            {idx + 1}
-          </a>
+      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+        {cards.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setActive(i)}
+            className={`w-3 h-3 rounded-full transition-colors duration-300 ${
+              i === active ? 'bg-blue-600' : 'bg-gray-300'
+            }`}
+          />
         ))}
       </div>
     </div>
